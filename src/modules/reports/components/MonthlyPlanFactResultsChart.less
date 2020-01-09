@@ -1,0 +1,120 @@
+.MonthlyPlanFactResultsBarChart {
+    width: 100%;
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+
+    &__item {
+        flex-grow: 1;
+        flex-shrink: 1;
+        flex-basis: 40%;
+
+        border: 3px solid #fff;
+    }
+}
+
+@stripeWidth: 7px;
+@spaceWidth: 2px;
+.striped-bg(@color) {
+    background: repeating-linear-gradient(
+        45deg,
+        @color,
+        @color @stripeWidth,
+        rgba(255, 255, 255, 0.2) @stripeWidth,
+        rgba(255, 255, 255, 0.2) @stripeWidth + @spaceWidth
+    );
+}
+
+.MonthlyPlanFactResultsBar {
+    display: flex;
+    flex-flow: column nowrap;
+    justify-content: stretch;
+    align-items: stretch;
+    border: 1px solid #eee;
+
+    &.selected {
+        border-color: #55c;
+    }
+
+    &__bar-container {
+        flex-grow: 1;
+        flex-shrink: 1;
+        position: relative;
+
+        &.income {
+            .MonthlyPlanFactResultsBar__metric {
+                bottom: 0;
+            }
+        }
+
+        &.expence {
+            .MonthlyPlanFactResultsBar__metric {
+                top: 0;
+            }
+        }
+    }
+
+    @barWidth: 16.5%;
+    @incomeColor: rgba(84, 250, 84, 0.973);
+    @expenceColor: rgba(250, 84, 84, 0.973);
+
+    &__metric {
+        position: absolute;
+        bottom: 0;
+        width: @barWidth;
+
+        display: flex;
+        flex-flow: column nowrap;
+        align-items: center;
+
+        font-size: 0.5rem;
+        text-align: center;
+
+        &.income {
+            &.plan {
+                .striped-bg(@incomeColor);
+                left: @barWidth * 0;
+            }
+            &.fact {
+                background: @incomeColor;
+                left: @barWidth * 1;
+            }
+        }
+
+        &.expence {
+            &.plan {
+                .striped-bg(@expenceColor);
+                left: @barWidth * 2;
+            }
+            &.fact {
+                background: @expenceColor;
+                left: @barWidth * 3;
+            }
+        }
+
+        &.total {
+            &.plan {
+                .striped-bg(@incomeColor);
+                left: @barWidth * 4;
+
+                &.negative {
+                    .striped-bg(@expenceColor);
+                }
+            }
+            &.fact {
+                background: @incomeColor;
+                left: @barWidth * 5;
+
+                &.negative {
+                    background: @expenceColor;
+                }
+            }
+        }
+    }
+
+    &__value {
+        background: rgba(255, 255, 255, 0.5);
+        color: #000;
+    }
+}

@@ -1,0 +1,49 @@
+{
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es5",
+    "experimentalDecorators": true,
+    "noImplicitReturns": true,
+    "noImplicitThis": true,
+    "noImplicitAny": true,
+    "noStrictGenericChecks": true,
+    "strictNullChecks": false,
+    "suppressImplicitAnyIndexErrors": true,
+    "allowSyntheticDefaultImports": true,
+    "noUnusedLocals": true,
+    "skipLibCheck": true,
+    "alwaysStrict": true,
+    "downlevelIteration": true,
+    "lib": [
+      "es5", "es6", "dom"
+    ],
+    "jsx": "react",
+    "paths": {
+      "@utils": ["./utils"],
+      "@fin": ["./modules/fin"],
+      "@ref": ["./modules/refs"],
+      "@planning": ["./modules/planning"],
+      "@custom-attrs": ["./modules/custom-attrs"],
+      "@reports": ["./modules/reports"],
+      "@api/common": ["./api"],
+      "@store": ["./store"],
+      "@store/utils": ["./store/utils"],
+      "@controls": ["./controls"],
+      "@components": ["./components"],
+      "@layouts": ["./layouts"],
+      "@pages": ["./pages"],
+      "rd-url-utils": ["./libs/rd-url-utils"]
+    },
+    "typeRoots": [
+      "./node_modules/@types"
+    ]
+  },
+  "include": [
+    "./src/index.tsx",
+    "./src/declarations/index.d.ts"
+  ]
+}

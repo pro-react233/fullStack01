@@ -1,0 +1,132 @@
+import { Field } from "@controls";
+import { CostCenterSelectList, CurrencySelectList } from "@ref";
+import { AppState } from "@store";
+import { createObjectComparer } from "@utils";
+import * as React from "react";
+import { connect } from "react-redux";
+import { Dispatch } from "redux";
+import {
+    addScheduleAction,
+    removeScheduleAction,
+    scheduleForm,
+    scheduleFormBindings,
+    scheduleFormSelector
+} from "../store";
+import { ScheduleRuleSelectList } from "./ScheduleRuleSelectList";
+
+export interface ScheduleFormPlainComponentProps {
+    form: typeof scheduleForm.types.selectorResult;
+    events: typeof scheduleForm.types.eventBindings;
+    onAddSchedule: () => void;
+    onRemoveSchedule: () => void;
+}
+
+export function ScheduleFormPlainComponent({
+    form: { fields },
+    events: { fields: fieldEvents },
+    onAddSchedule,
+    onRemoveSchedule
+}: ScheduleFormPlainComponentProps) {
+    return (
+        <div>
+            <div>
+                <button type="button" onClick={onRemoveSchedule}>
+                    X
+                </button>
+                <button type="button" onClick={onAddSchedule}>
+                    +
+                </button>
+            </div>
+            <div>
+                <div>
+                    <div>
+                        <Field label="Name" field={fields.name}>
+                            <input checked={!!fields.name.value} {...fieldEvents.name} type="text" />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Active" field={fields.isActive}>
+                            <input checked={fields.isActive.value} {...fieldEvents.isActive} type="checkbox" />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Start date" field={fields.startDate}>
+                            <input value={fields.startDate.value || ""} {...fieldEvents.startDate} type="date-local" />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="End date" field={fields.endDate}>
+                            <input value={fields.endDate.value || ""} {...fieldEvents.endDate} type="date-local" />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Cost center" field={fields.costCenterId}>
+                            <CostCenterSelectList
+                                value={fields.costCenterId.value || 0}
+                                {...fieldEvents.costCenterId}
+                            />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Currency" field={fields.currency}>
+                            <CurrencySelectList value={fields.currency.value || ""} {...fieldEvents.currency} />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Rule" field={fields.scheduleRule}>
+                            <ScheduleRuleSelectList
+                                value={fields.scheduleRule.value || ""}
+                                {...fieldEvents.scheduleRule}
+                            />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Value Expression" field={fields.valueExpression}>
+                            <input
+                                value={fields.valueExpression.value || ""}
+                                {...fieldEvents.valueExpression}
+                                type="text"
+                            />
+                        </Field>
+                    </div>
+                    <div>
+                        <Field label="Schedule Settings" field={fields.scheduleSettings}>
+                            <textarea
+                                value={fields.scheduleSettings.value || ""}
+                                {...fieldEvents.scheduleSettings}
+                                type="text"
+                            />
+                        </Field>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+export interface ScheduleFormPlainProps {
+    scheduleId: string;
+    planId: string;
+}
+
+export const ScheduleFormPlain = (connect(
+    (appState: AppState, ownProps: ScheduleFormPlainProps): Partial<ScheduleFormPlainComponentProps> => ({
+        form: scheduleFormSelector(appState, ownProps.planId, ownProps.scheduleId)
+    }),
+
+    (dispatch: Dispatch, ownProps: ScheduleFormPlainProps): Partial<ScheduleFormPlainComponentProps> => ({
+        events: scheduleFormBindings.bind(dispatch, {
+            id: ownProps.planId,
+            scheduleId: ownProps.scheduleId
+        }),
+        onAddSchedule: () =>
+            dispatch(addScheduleAction({ id: ownProps.planId, addAfterScheduleId: ownProps.scheduleId })),
+        onRemoveSchedule: () => dispatch(removeScheduleAction({ id: ownProps.planId, scheduleId: ownProps.scheduleId }))
+    }),
+    undefined,
+    {
+        areStatePropsEqual: createObjectComparer({
+            comparerName: "ScheduleFormPlain.stateProps"
+        })
+    }
+)(ScheduleFormPlainComponent) as any) as React.ComponentClass<ScheduleFormPlainProps>;

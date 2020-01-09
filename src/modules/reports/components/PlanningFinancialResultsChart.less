@@ -1,0 +1,60 @@
+@incomeColor: rgb(90, 248, 90);
+@expenceColor: rgb(248, 90, 90);
+@totalColor: rgb(136, 136, 255);
+@baseColor: #999;
+@opacity: 80%;
+
+.PlanningFinancialResultsChart {
+    color: @baseColor;
+
+    &__line {
+        stroke-width: 1em;
+        fill: none;
+
+        &.zero-line {
+            stroke: @baseColor;
+        }
+
+        &.income {
+            stroke: @incomeColor;
+            fill: fade(@incomeColor, @opacity);
+        }
+
+        &.expence {
+            stroke: @expenceColor;
+            fill: fade(@expenceColor, @opacity);
+        }
+
+        &.total {
+            stroke: @totalColor;
+            fill: fade(@totalColor, @opacity);
+        }
+
+        &.sliding-total {
+            stroke: #ca3;
+        }
+    }
+
+    &__text {
+        font-size: 9em;
+    }
+
+    &__tick {
+        stroke-width: 1em;
+        fill: none;
+        stroke: @baseColor;
+    }
+
+    &__dot {
+        &.income {
+            fill: darken(@incomeColor, @opacity);
+        }
+        &.expence {
+            fill: darken(@expenceColor, @opacity);
+        }
+
+        &.total {
+            fill: darken(@totalColor, @opacity);
+        }
+    }
+}

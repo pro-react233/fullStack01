@@ -1,0 +1,123 @@
+import { FieldPlain as Field } from "@controls";
+import { AppState } from "@store";
+import { FetchingState } from "rd-redux-http";
+import * as React from "react";
+import { connect } from "react-redux";
+import { RouteComponentProps } from "react-router";
+import { Link } from "react-router-dom";
+import { Dispatch } from "redux";
+import { ScheduleForm } from "../components";
+import { planForm, planFormBindings, scheduleIdSelector } from "../store";
+import { PlanListUrl } from "../urls";
+import { createObjectComparer } from "@utils";
+
+interface PlanDetailsPlainPageComponentProps {
+    planId: string;
+    isLoading: boolean;
+    isSaving: boolean;
+    isNew: boolean;
+    form: typeof planForm.types.selectorResult;
+    formEvents: typeof planForm.types.eventBindings;
+    scheduleIdentifiers: string[];
+}
+
+function PlanDetailsPlainPageComponent({
+    form: { fields },
+    formEvents: { form: formEvents, fields: fieldEvents },
+    isLoading,
+    isSaving,
+    planId,
+    scheduleIdentifiers
+}: PlanDetailsPlainPageComponentProps) {
+    return (
+        <div>
+            {isSaving && <h4>Saving...</h4>}
+            {!isLoading && (
+                <form {...formEvents}>
+                    <fieldset>
+                        <div>
+                            <Field label="Name" field={fields.name}>
+                                <input
+                                    value={fields.name.value || ""}
+                                    {...fieldEvents.name}
+                                    type="text"
+                                />
+                            </Field>
+                        </div>
+                        <div>
+                            <Field label="Active" field={fields.isActive}>
+                                <input
+                                    checked={!!fields.isActive.value}
+                                    {...fieldEvents.isActive}
+                                    type="checkbox"
+                                />
+                            </Field>
+                        </div>
+                        <div>
+                            <h3>Schedules</h3>
+                            <div>
+                                {scheduleIdentifiers.map(i => (
+                                    <div key={i}>
+                                        <ScheduleForm
+                                            planId={planId}
+                                            scheduleId={i}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            <button type="submit">Save</button>
+                            <Link to={PlanListUrl.format({})}>Cancel</Link>
+                        </div>
+                    </fieldset>
+                </form>
+            )}
+        </div>
+    );
+}
+
+export const PlanDetailsPlainPage = connect(
+    (
+        appState: AppState,
+        ownProps: RouteComponentProps<{ id: string }>
+    ): Partial<PlanDetailsPlainPageComponentProps> => {
+        const planId = ownProps.match.params.id;
+        const isNew = planId === "new";
+
+        const state = appState.planning.planDetails.plans[planId];
+
+        const planData = state
+            ? FetchingState.getDataOrDefault(state.data, undefined)
+            : undefined;
+
+        return {
+            planId,
+            isLoading:
+                !isNew &&
+                !!state &&
+                FetchingState.isInitialOrFetching(state.data),
+            isSaving: false,
+            isNew,
+            form: planForm.selector(
+                state ? state.form : planForm.state.empty(),
+                planData ? planData.plan : undefined
+            ),
+            scheduleIdentifiers: scheduleIdSelector(appState, planId)
+        };
+    },
+    (
+        dispatch: Dispatch,
+        ownProps: RouteComponentProps<{ id: string }>
+    ): Partial<PlanDetailsPlainPageComponentProps> => ({
+        formEvents: planFormBindings.bind(dispatch, {
+            id: ownProps.match.params.id
+        })
+    }),
+    undefined,
+    {
+        areStatePropsEqual: createObjectComparer({
+            comparerName: "PlanDetailsPlain"
+        })
+    }
+)(PlanDetailsPlainPageComponent);

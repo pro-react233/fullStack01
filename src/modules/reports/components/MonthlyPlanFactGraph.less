@@ -1,0 +1,94 @@
+@expenceColor: rgb(255, 16, 16);
+@incomeColor: rgb(16, 255, 16);
+
+.MonthlyPlanFactGraph {
+    &__line {
+        fill: none;
+        stroke-width: 2em;
+        stroke: #caf;
+
+        &.income {
+            stroke: @incomeColor;
+        }
+
+        &.expence {
+            stroke: @expenceColor;
+        }
+    }
+
+    &__area {
+        stroke-width: 1em;
+        &.income {
+            fill: fade(@incomeColor, 30%);
+            stroke: fade(@incomeColor, 40%);
+        }
+        &.expence {
+            fill: fade(@expenceColor, 30%);
+            stroke: fade(@expenceColor, 40%);
+        }
+    }
+
+    &__axis {
+        fill: none;
+        stroke-width: 1em;
+        stroke: #000;
+    }
+
+    &__tick {
+        display: none;
+        fill: none;
+        stroke-width: 1em;
+        stroke: #000;
+
+        &.passthrough {
+            stroke: #ddd;
+            display: inline;
+        }
+    }
+
+    &__legend {
+        fill: #333;
+        font-size: 10em;
+
+        &.vertical {
+            text-anchor: end;
+        }
+
+        &.horizontal {
+            cursor: pointer;
+        }
+    }
+
+    &__dot {
+        stroke: #999;
+        fill: #eee;
+        stroke-width: 0.4em;
+        cursor: pointer;
+
+        &.plan.income {
+            fill: fade(@incomeColor, 30%);
+            stroke: fade(@incomeColor, 40%);
+        }
+        &.plan.expence {
+            fill: fade(@expenceColor, 30%);
+            stroke: fade(@expenceColor, 40%);
+        }
+
+        &.fact.income {
+            fill: #fff;
+            stroke: @incomeColor;
+        }
+        &.fact.expence {
+            fill: #fff;
+            stroke: @expenceColor;
+        }
+    }
+
+    &__bar {
+        stroke-width: 0;
+        fill: @incomeColor;
+        &.negative {
+            fill: @expenceColor;
+        }
+    }
+}
